@@ -1,0 +1,21 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* Light values (default) and dark overrides for src/theme/colors.json's
+   light/dark background, foreground, muted, border. Brand colors
+   (primary/secondary/accent/...) don't change between modes, so they're
+   wired directly in tailwind.config.js instead of as variables here. */
+:root {
+  --color-bg: 248 250 252;
+  --color-fg: 31 41 55;
+  --color-muted: 100 116 139;
+  --color-border: 226 232 240;
+}
+
+.dark {
+  --color-bg: 31 41 55;
+  --color-fg: 248 250 252;
+  --color-muted: 55 65 79;
+  --color-border: 55 65 81;
+}
