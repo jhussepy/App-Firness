@@ -2,14 +2,16 @@ import '../global.css';
 import 'react-native-gesture-handler';
 
 import { useFonts } from 'expo-font';
-import { Stack } from 'expo-router';
+import { Stack, useRouter, useSegments } from 'expo-router';
 import * as SplashScreen from 'expo-splash-screen';
 import { useEffect } from 'react';
 import { View } from 'react-native';
 import { GestureHandlerRootView } from 'react-native-gesture-handler';
 import { SafeAreaProvider } from 'react-native-safe-area-context';
 
+import { ensureSeeded } from '@/data/seed/seed-loader';
 import { fontAssets } from '@/theme/fonts';
+import { useProfileStore } from '@/stores/profile.store';
 import { useThemeStore } from '@/stores/theme.store';
 
 SplashScreen.preventAutoHideAsync();
@@ -17,14 +19,33 @@ SplashScreen.preventAutoHideAsync();
 export default function RootLayout() {
   const [fontsLoaded, fontError] = useFonts(fontAssets);
   const mode = useThemeStore((s) => s.mode);
+  const router = useRouter();
+  const segments = useSegments();
+  const profile = useProfileStore((s) => s.profile);
+  const isProfileLoaded = useProfileStore((s) => s.isLoaded);
+  const loadProfile = useProfileStore((s) => s.load);
 
   useEffect(() => {
-    if (fontsLoaded || fontError) {
-      SplashScreen.hideAsync();
-    }
-  }, [fontsLoaded, fontError]);
+    ensureSeeded();
+    loadProfile();
+  }, [loadProfile]);
 
-  if (!fontsLoaded && !fontError) {
+  const isReady = (fontsLoaded || !!fontError) && isProfileLoaded;
+
+  useEffect(() => {
+    if (!isReady) return;
+    SplashScreen.hideAsync();
+
+    const inOnboarding = segments[0] === 'onboarding';
+    const isOnboarded = !!profile?.onboardingCompletedAt;
+    if (!isOnboarded && !inOnboarding) {
+      router.replace('/onboarding');
+    } else if (isOnboarded && inOnboarding) {
+      router.replace('/(tabs)');
+    }
+  }, [isReady, profile, segments, router]);
+
+  if (!isReady) {
     return null;
   }
 
