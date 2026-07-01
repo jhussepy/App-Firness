@@ -34,11 +34,7 @@ export default function RoutineDetailScreen() {
     () => scheduledRoutines.find((s) => s.routineId === planId && s.active),
     [scheduledRoutines, planId]
   );
-  const [selectedDays, setSelectedDays] = useState<number[]>(existingSchedule?.daysOfWeek ?? []);
-
-  useEffect(() => {
-    setSelectedDays(existingSchedule?.daysOfWeek ?? []);
-  }, [existingSchedule]);
+  const [selectedDays, setSelectedDays] = useState<number[]>(() => existingSchedule?.daysOfWeek ?? []);
 
   if (!routine) {
     return (

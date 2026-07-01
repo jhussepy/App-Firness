@@ -218,20 +218,21 @@ export default function OnboardingScreen() {
 
   return (
     <SafeAreaView className="flex-1 bg-bg" edges={['top', 'bottom']}>
-      <View className="px-4 pt-2">
-        <View className="flex-row items-center gap-4 mb-2">
-          <Pressable onPress={back} hitSlop={12}>
-            <Text className="text-fg" style={{ fontSize: 22 }}>
-              ←
-            </Text>
-          </Pressable>
-          <View className="flex-1">
-            <ProgressBar step={step + 1} totalSteps={TOTAL_STEPS} />
+      <View className="flex-1 w-full md:max-w-lg md:mx-auto">
+        <View className="px-4 pt-2">
+          <View className="flex-row items-center gap-4 mb-2">
+            <Pressable onPress={back} hitSlop={12}>
+              <Text className="text-fg" style={{ fontSize: 22 }}>
+                ←
+              </Text>
+            </Pressable>
+            <View className="flex-1">
+              <ProgressBar step={step + 1} totalSteps={TOTAL_STEPS} />
+            </View>
           </View>
         </View>
-      </View>
 
-      <ScrollView className="flex-1 px-4" contentContainerClassName="pb-8">
+        <ScrollView className="flex-1 px-4" contentContainerClassName="pb-8">
         {step === 0 && (
           <>
             <StepHeader icon="🏁" title="¿Cuál es tu objetivo?" subtitle="Calcularemos tus calorías necesarias para lograrlo" />
@@ -439,7 +440,8 @@ export default function OnboardingScreen() {
             </View>
           </>
         )}
-      </ScrollView>
+        </ScrollView>
+      </View>
     </SafeAreaView>
   );
 }

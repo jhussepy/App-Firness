@@ -2,6 +2,7 @@ import { useEffect, useMemo, useState } from 'react';
 import { Pressable, ScrollView, Text, TextInput, View } from 'react-native';
 import { useLocalSearchParams, useRouter } from 'expo-router';
 import { Minus, Plus } from 'lucide-react-native';
+import { SafeAreaView } from 'react-native-safe-area-context';
 
 import { PrimaryButton } from '@/components/ui/PrimaryButton';
 import { useNutritionStore } from '@/stores/nutrition.store';
@@ -39,7 +40,8 @@ export default function FoodPickerScreen() {
   }
 
   return (
-    <View className="flex-1 bg-bg px-4">
+    <SafeAreaView className="flex-1 bg-bg" edges={['top', 'bottom']}>
+      <View className="flex-1 w-full md:max-w-lg md:mx-auto px-4">
       <View className="pt-4 pb-3">
         <Text className="font-display-bold text-2xl text-fg">Agregar alimento</Text>
       </View>
@@ -95,6 +97,7 @@ export default function FoodPickerScreen() {
           <PrimaryButton label={`Agregar · ${Math.round(selectedFood.caloriesPerServing * servings)} kcal`} onPress={confirmAdd} />
         </View>
       ) : null}
-    </View>
+      </View>
+    </SafeAreaView>
   );
 }

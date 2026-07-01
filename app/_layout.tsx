@@ -1,5 +1,4 @@
 import '../global.css';
-import 'react-native-gesture-handler';
 
 import { useFonts } from 'expo-font';
 import { Stack, useRouter, useSegments } from 'expo-router';
