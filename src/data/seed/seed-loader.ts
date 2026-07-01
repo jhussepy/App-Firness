@@ -13,9 +13,9 @@ export async function ensureSeeded(): Promise<void> {
   if (alreadySeeded) return;
 
   await Promise.all([
-    ...seedExercises.map((e) => exerciseRepository.upsert(e)),
-    ...seedFoods.map((f) => foodRepository.upsert(f)),
-    ...seedRoutines.map((r) => routineRepository.upsert(r)),
+    exerciseRepository.upsertMany(seedExercises),
+    foodRepository.upsertMany(seedFoods),
+    routineRepository.upsertMany(seedRoutines),
   ]);
 
   await writeJSON(SEEDED_FLAG_KEY, true);
