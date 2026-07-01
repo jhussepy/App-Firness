@@ -5,7 +5,7 @@ import { useFonts } from 'expo-font';
 import { Stack, useRouter, useSegments } from 'expo-router';
 import * as SplashScreen from 'expo-splash-screen';
 import { useEffect } from 'react';
-import { View } from 'react-native';
+import { LogBox, View } from 'react-native';
 import { GestureHandlerRootView } from 'react-native-gesture-handler';
 import { SafeAreaProvider } from 'react-native-safe-area-context';
 
@@ -15,6 +15,11 @@ import { useProfileStore } from '@/stores/profile.store';
 import { useThemeStore } from '@/stores/theme.store';
 
 SplashScreen.preventAutoHideAsync();
+
+// react-native-gifted-charts sets RN Responder-system props on SVG elements,
+// which react-native-web doesn't understand on the web target — cosmetic
+// console noise only, native platforms are unaffected.
+LogBox.ignoreLogs(['Unknown event handler property']);
 
 export default function RootLayout() {
   const [fontsLoaded, fontError] = useFonts(fontAssets);
