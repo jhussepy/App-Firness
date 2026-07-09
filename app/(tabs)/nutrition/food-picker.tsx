@@ -5,6 +5,7 @@ import { Minus, Plus } from 'lucide-react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 
 import { PrimaryButton } from '@/components/ui/PrimaryButton';
+import { ScreenHeader } from '@/components/ui/ScreenHeader';
 import { useNutritionStore } from '@/stores/nutrition.store';
 import { useThemeColors } from '@/theme/use-theme-colors';
 import type { MealSlot } from '@/data/models/user';
@@ -42,9 +43,7 @@ export default function FoodPickerScreen() {
   return (
     <SafeAreaView className="flex-1 bg-bg" edges={['top', 'bottom']}>
       <View className="flex-1 w-full md:max-w-lg md:mx-auto px-4">
-      <View className="pt-4 pb-3">
-        <Text className="font-display-bold text-2xl text-fg">Agregar alimento</Text>
-      </View>
+      <ScreenHeader title="Agregar alimento" />
       <TextInput
         value={query}
         onChangeText={setQuery}

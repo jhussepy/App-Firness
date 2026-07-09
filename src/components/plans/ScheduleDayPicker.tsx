@@ -1,6 +1,7 @@
 import { Pressable, Text, View } from 'react-native';
 
 const DAY_LABELS = ['D', 'L', 'M', 'M', 'J', 'V', 'S'];
+const DAY_FULL_NAMES = ['Domingo', 'Lunes', 'Martes', 'Miércoles', 'Jueves', 'Viernes', 'Sábado'];
 
 interface ScheduleDayPickerProps {
   selectedDays: number[];
@@ -16,6 +17,8 @@ export function ScheduleDayPicker({ selectedDays, onToggleDay }: ScheduleDayPick
           <Pressable
             key={day}
             onPress={() => onToggleDay(day)}
+            accessibilityLabel={DAY_FULL_NAMES[day]}
+            accessibilityState={{ selected }}
             className={`w-10 h-10 rounded-full items-center justify-center border ${
               selected ? 'bg-primary border-primary' : 'bg-muted/30 border-border'
             }`}

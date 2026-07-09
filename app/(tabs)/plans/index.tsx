@@ -1,6 +1,7 @@
 import { useEffect } from 'react';
-import { Text, View } from 'react-native';
+import { Pressable, Text, View } from 'react-native';
 import { useRouter } from 'expo-router';
+import { Plus } from 'lucide-react-native';
 
 import { RoutineCard } from '@/components/plans/RoutineCard';
 import { Screen } from '@/components/ui/Screen';
@@ -23,9 +24,18 @@ export default function PlansScreen() {
 
   return (
     <Screen>
-      <View className="pt-4 pb-4">
-        <Text className="font-display-bold text-3xl text-fg">Plans</Text>
-        <Text className="font-body text-base text-muted mt-1">Rutinas predefinidas y personalizadas</Text>
+      <View className="pt-4 pb-4 flex-row items-start justify-between">
+        <View>
+          <Text className="font-display-bold text-3xl text-fg">Plans</Text>
+          <Text className="font-body text-base text-muted mt-1">Rutinas predefinidas y personalizadas</Text>
+        </View>
+        <Pressable
+          onPress={() => router.push('/(tabs)/plans/create')}
+          accessibilityLabel="Crear rutina"
+          className="w-10 h-10 rounded-full bg-primary items-center justify-center active:opacity-85"
+        >
+          <Plus color="white" size={20} />
+        </Pressable>
       </View>
 
       {routines.map((routine) => (

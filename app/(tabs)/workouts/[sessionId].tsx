@@ -5,6 +5,7 @@ import { Plus } from 'lucide-react-native';
 
 import { Screen } from '@/components/ui/Screen';
 import { PrimaryButton } from '@/components/ui/PrimaryButton';
+import { ScreenHeader } from '@/components/ui/ScreenHeader';
 import { SessionTimer } from '@/components/workout/SessionTimer';
 import { SetRow } from '@/components/workout/SetRow';
 import { useExerciseStore } from '@/stores/exercise.store';
@@ -54,6 +55,7 @@ export default function SessionDetailScreen() {
   if (!session) {
     return (
       <Screen>
+        <ScreenHeader title="Sesión" />
         <View className="pt-12 items-center">
           <Text className="font-body text-muted">Sesión no encontrada.</Text>
         </View>
@@ -87,12 +89,10 @@ export default function SessionDetailScreen() {
 
   return (
     <Screen>
-      <View className="pt-4 pb-3 flex-row items-center justify-between">
-        <Text className="font-display-bold text-2xl text-fg">
-          {isActive ? 'Entrenamiento activo' : 'Detalle de sesión'}
-        </Text>
-        {isActive ? <SessionTimer startedAt={session.startedAt} /> : null}
-      </View>
+      <ScreenHeader
+        title={isActive ? 'Entrenamiento activo' : 'Detalle de sesión'}
+        rightSlot={isActive ? <SessionTimer startedAt={session.startedAt} /> : undefined}
+      />
 
       {groups.length === 0 ? (
         <View className="bg-muted/30 border border-border rounded-2xl p-6 items-center mb-4">
