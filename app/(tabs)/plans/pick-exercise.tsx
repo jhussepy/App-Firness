@@ -3,14 +3,14 @@ import { useRouter } from 'expo-router';
 import { ExercisePickerList } from '@/components/workout/ExercisePickerList';
 import { Screen } from '@/components/ui/Screen';
 import { ScreenHeader } from '@/components/ui/ScreenHeader';
-import { useWorkoutStore } from '@/stores/workout.store';
+import { useRoutineDraftStore } from '@/stores/routine-draft.store';
 
-export default function ExercisePickerScreen() {
+export default function PickExerciseForRoutineScreen() {
   const router = useRouter();
-  const addSet = useWorkoutStore((s) => s.addSet);
+  const addExercise = useRoutineDraftStore((s) => s.addExercise);
 
   function selectExercise(exerciseId: string) {
-    addSet(exerciseId, { reps: 0, weightKg: 0, completed: false });
+    addExercise(exerciseId);
     router.back();
   }
 

@@ -4,7 +4,9 @@ import { useLocalSearchParams, useRouter } from 'expo-router';
 
 import { PrimaryButton } from '@/components/ui/PrimaryButton';
 import { Screen } from '@/components/ui/Screen';
+import { ScreenHeader } from '@/components/ui/ScreenHeader';
 import { ScheduleDayPicker } from '@/components/plans/ScheduleDayPicker';
+import { startSessionFromRoutine } from '@/lib/start-routine-session';
 import { useExerciseStore } from '@/stores/exercise.store';
 import { usePlanStore } from '@/stores/plan.store';
 import { useWorkoutStore } from '@/stores/workout.store';
@@ -39,6 +41,7 @@ export default function RoutineDetailScreen() {
   if (!routine) {
     return (
       <Screen>
+        <ScreenHeader title="Rutina" />
         <View className="pt-12 items-center">
           <Text className="font-body text-muted">Rutina no encontrada.</Text>
         </View>
@@ -56,23 +59,16 @@ export default function RoutineDetailScreen() {
   }
 
   function handleStart() {
-    startSession(routine!.id);
-    for (const re of routine!.exercises) {
-      for (let i = 0; i < re.targetSets; i++) {
-        addSet(re.exerciseId, { reps: 0, weightKg: 0, completed: false });
-      }
-    }
+    startSessionFromRoutine(routine!, { startSession, addSet });
     router.push('/(tabs)/workouts/active');
   }
 
   return (
     <Screen>
-      <View className="pt-4 pb-4">
-        <Text className="font-display-bold text-2xl text-fg">{routine.name}</Text>
-        {routine.description ? (
-          <Text className="font-body text-muted text-sm mt-1">{routine.description}</Text>
-        ) : null}
-      </View>
+      <ScreenHeader title={routine.name} />
+      {routine.description ? (
+        <Text className="font-body text-muted text-sm mb-4 -mt-2">{routine.description}</Text>
+      ) : null}
 
       <View className="mb-6">
         {routine.exercises.map((re) => {
