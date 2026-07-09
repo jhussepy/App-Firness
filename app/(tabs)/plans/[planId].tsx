@@ -17,6 +17,8 @@ export default function RoutineDetailScreen() {
 
   const routines = usePlanStore((s) => s.routines);
   const scheduledRoutines = usePlanStore((s) => s.scheduledRoutines);
+  const isPlanLoaded = usePlanStore((s) => s.isLoaded);
+  const loadPlan = usePlanStore((s) => s.load);
   const scheduleRoutine = usePlanStore((s) => s.scheduleRoutine);
   const unscheduleRoutine = usePlanStore((s) => s.unscheduleRoutine);
 
@@ -27,9 +29,13 @@ export default function RoutineDetailScreen() {
   const startSession = useWorkoutStore((s) => s.startSession);
   const addSet = useWorkoutStore((s) => s.addSet);
 
+  // This screen can be the first (and only) one to mount on a direct/deep
+  // link or a hard refresh — it can't assume plans/index.tsx already
+  // triggered the load, so it loads its own data dependencies too.
   useEffect(() => {
     if (!exercisesLoaded) loadExercises();
-  }, [exercisesLoaded, loadExercises]);
+    if (!isPlanLoaded) loadPlan();
+  }, [exercisesLoaded, loadExercises, isPlanLoaded, loadPlan]);
 
   const routine = routines.find((r) => r.id === planId);
   const existingSchedule = useMemo(
@@ -43,7 +49,9 @@ export default function RoutineDetailScreen() {
       <Screen>
         <ScreenHeader title="Rutina" />
         <View className="pt-12 items-center">
-          <Text className="font-body text-muted">Rutina no encontrada.</Text>
+          <Text className="font-body text-muted">
+            {isPlanLoaded ? 'Rutina no encontrada.' : 'Cargando...'}
+          </Text>
         </View>
       </Screen>
     );

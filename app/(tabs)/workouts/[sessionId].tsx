@@ -36,14 +36,19 @@ export default function SessionDetailScreen() {
 
   const activeSession = useWorkoutStore((s) => s.activeSession);
   const history = useWorkoutStore((s) => s.history);
+  const isHistoryLoaded = useWorkoutStore((s) => s.isLoaded);
+  const loadHistory = useWorkoutStore((s) => s.loadHistory);
   const addSet = useWorkoutStore((s) => s.addSet);
   const toggleSetCompleted = useWorkoutStore((s) => s.toggleSetCompleted);
   const completeSession = useWorkoutStore((s) => s.completeSession);
   const discardSession = useWorkoutStore((s) => s.discardSession);
 
+  // Direct/deep links can land here before workouts/index.tsx ever mounts,
+  // so this screen can't assume that screen already loaded the history.
   useEffect(() => {
     if (!exercisesLoaded) loadExercises();
-  }, [exercisesLoaded, loadExercises]);
+    if (!isHistoryLoaded) loadHistory();
+  }, [exercisesLoaded, loadExercises, isHistoryLoaded, loadHistory]);
 
   const isActive = sessionId === 'active';
   const session: WorkoutSession | undefined = isActive
@@ -57,7 +62,9 @@ export default function SessionDetailScreen() {
       <Screen>
         <ScreenHeader title="Sesión" />
         <View className="pt-12 items-center">
-          <Text className="font-body text-muted">Sesión no encontrada.</Text>
+          <Text className="font-body text-muted">
+            {!isActive && !isHistoryLoaded ? 'Cargando...' : 'Sesión no encontrada.'}
+          </Text>
         </View>
       </Screen>
     );
