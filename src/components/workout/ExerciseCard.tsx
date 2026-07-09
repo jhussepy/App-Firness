@@ -1,26 +1,17 @@
 import { Pressable, Text, View } from 'react-native';
-import { Dumbbell } from 'lucide-react-native';
+import { Dumbbell, Info } from 'lucide-react-native';
 
+import { EQUIPMENT_LABEL, MUSCLE_LABEL } from '@/lib/exercise-labels';
 import { useThemeColors } from '@/theme/use-theme-colors';
 import type { Exercise } from '@/data/models/exercise';
-
-const MUSCLE_LABEL: Record<Exercise['muscleGroup'], string> = {
-  chest: 'Pecho',
-  back: 'Espalda',
-  legs: 'Piernas',
-  shoulders: 'Hombros',
-  arms: 'Brazos',
-  core: 'Core',
-  cardio: 'Cardio',
-  full_body: 'Cuerpo completo',
-};
 
 interface ExerciseCardProps {
   exercise: Exercise;
   onPress: () => void;
+  onInfoPress?: () => void;
 }
 
-export function ExerciseCard({ exercise, onPress }: ExerciseCardProps) {
+export function ExerciseCard({ exercise, onPress, onInfoPress }: ExerciseCardProps) {
   const colors = useThemeColors();
 
   return (
@@ -34,9 +25,14 @@ export function ExerciseCard({ exercise, onPress }: ExerciseCardProps) {
       <View className="flex-1">
         <Text className="font-body-semibold text-fg">{exercise.name}</Text>
         <Text className="font-body text-muted text-xs mt-0.5">
-          {MUSCLE_LABEL[exercise.muscleGroup]} · {exercise.equipment}
+          {MUSCLE_LABEL[exercise.muscleGroup]} · {EQUIPMENT_LABEL[exercise.equipment]}
         </Text>
       </View>
+      {onInfoPress ? (
+        <Pressable onPress={onInfoPress} hitSlop={10} accessibilityLabel={`Cómo hacer ${exercise.name}`}>
+          <Info color={colors.muted} size={18} />
+        </Pressable>
+      ) : null}
     </Pressable>
   );
 }

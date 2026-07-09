@@ -1,5 +1,6 @@
 import { useEffect, useMemo, useState } from 'react';
 import { TextInput } from 'react-native';
+import { useRouter } from 'expo-router';
 
 import { ExerciseCard } from './ExerciseCard';
 import { useExerciseStore } from '@/stores/exercise.store';
@@ -10,6 +11,7 @@ interface ExercisePickerListProps {
 }
 
 export function ExercisePickerList({ onSelect }: ExercisePickerListProps) {
+  const router = useRouter();
   const colors = useThemeColors();
   const exercises = useExerciseStore((s) => s.exercises);
   const load = useExerciseStore((s) => s.load);
@@ -36,7 +38,12 @@ export function ExercisePickerList({ onSelect }: ExercisePickerListProps) {
         className="bg-muted/30 border border-border rounded-2xl px-4 py-3 font-body text-fg mb-3"
       />
       {filtered.map((item) => (
-        <ExerciseCard key={item.id} exercise={item} onPress={() => onSelect(item.id)} />
+        <ExerciseCard
+          key={item.id}
+          exercise={item}
+          onPress={() => onSelect(item.id)}
+          onInfoPress={() => router.push(`/exercise/${item.id}`)}
+        />
       ))}
     </>
   );

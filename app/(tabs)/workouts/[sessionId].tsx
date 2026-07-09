@@ -1,7 +1,7 @@
 import { useEffect, useMemo } from 'react';
 import { Pressable, Text, View } from 'react-native';
 import { useLocalSearchParams, useRouter } from 'expo-router';
-import { Plus } from 'lucide-react-native';
+import { Info, Plus } from 'lucide-react-native';
 
 import { Screen } from '@/components/ui/Screen';
 import { PrimaryButton } from '@/components/ui/PrimaryButton';
@@ -113,7 +113,14 @@ export default function SessionDetailScreen() {
         const exercise = getExercise(exerciseId);
         return (
           <View key={exerciseId} className="mb-5">
-            <Text className="font-body-semibold text-fg text-base mb-2">{exercise?.name ?? 'Ejercicio'}</Text>
+            <Pressable
+              onPress={() => router.push(`/exercise/${exerciseId}`)}
+              accessibilityLabel={`Cómo hacer ${exercise?.name ?? 'este ejercicio'}`}
+              className="flex-row items-center gap-1.5 mb-2 self-start active:opacity-70"
+            >
+              <Text className="font-body-semibold text-fg text-base">{exercise?.name ?? 'Ejercicio'}</Text>
+              <Info color={colors.muted} size={14} />
+            </Pressable>
             {isActive
               ? sets.map((set) => (
                   <SetRow

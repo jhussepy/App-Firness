@@ -1,6 +1,7 @@
 import { useEffect, useMemo, useState } from 'react';
-import { Text, View } from 'react-native';
+import { Pressable, Text, View } from 'react-native';
 import { useLocalSearchParams, useRouter } from 'expo-router';
+import { Info } from 'lucide-react-native';
 
 import { PrimaryButton } from '@/components/ui/PrimaryButton';
 import { Screen } from '@/components/ui/Screen';
@@ -10,10 +11,12 @@ import { startSessionFromRoutine } from '@/lib/start-routine-session';
 import { useExerciseStore } from '@/stores/exercise.store';
 import { usePlanStore } from '@/stores/plan.store';
 import { useWorkoutStore } from '@/stores/workout.store';
+import { useThemeColors } from '@/theme/use-theme-colors';
 
 export default function RoutineDetailScreen() {
   const { planId } = useLocalSearchParams<{ planId: string }>();
   const router = useRouter();
+  const colors = useThemeColors();
 
   const routines = usePlanStore((s) => s.routines);
   const scheduledRoutines = usePlanStore((s) => s.scheduledRoutines);
@@ -82,15 +85,20 @@ export default function RoutineDetailScreen() {
         {routine.exercises.map((re) => {
           const exercise = getExercise(re.exerciseId);
           return (
-            <View
+            <Pressable
               key={`${re.exerciseId}-${re.order}`}
-              className="flex-row justify-between items-center py-2.5 border-b border-border"
+              onPress={() => router.push(`/exercise/${re.exerciseId}`)}
+              accessibilityLabel={`Cómo hacer ${exercise?.name ?? 'este ejercicio'}`}
+              className="flex-row justify-between items-center py-2.5 border-b border-border active:opacity-70"
             >
               <Text className="font-body text-fg">{exercise?.name ?? 'Ejercicio'}</Text>
-              <Text className="font-body text-muted text-sm">
-                {re.targetSets} × {re.targetReps}
-              </Text>
-            </View>
+              <View className="flex-row items-center gap-2">
+                <Text className="font-body text-muted text-sm">
+                  {re.targetSets} × {re.targetReps}
+                </Text>
+                <Info color={colors.muted} size={15} />
+              </View>
+            </Pressable>
           );
         })}
       </View>

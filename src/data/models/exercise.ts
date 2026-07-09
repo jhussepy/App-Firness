@@ -16,5 +16,6 @@ export interface Exercise {
   muscleGroup: MuscleGroup;
   equipment: Equipment;
   isCustom: boolean;
-  instructions?: string;
+  instructions?: string[];
+  tips?: string;
 }
