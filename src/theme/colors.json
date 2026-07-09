@@ -1,0 +1,24 @@
+{
+  "primary": "#F97316",
+  "secondary": "#FB923C",
+  "accent": "#22C55E",
+  "destructive": "#EF4444",
+  "ring": "#F97316",
+  "macro": {
+    "protein": "#3B82F6",
+    "carb": "#F97316",
+    "fat": "#EAB308"
+  },
+  "dark": {
+    "background": "#1F2937",
+    "foreground": "#F8FAFC",
+    "muted": "#37414F",
+    "border": "#374151"
+  },
+  "light": {
+    "background": "#F8FAFC",
+    "foreground": "#1F2937",
+    "muted": "#64748B",
+    "border": "#E2E8F0"
+  }
+}
