@@ -1,5 +1,8 @@
 import { create } from 'zustand';
 import type { Session } from '@supabase/supabase-js';
+import * as Linking from 'expo-linking';
+import * as WebBrowser from 'expo-web-browser';
+import { Platform } from 'react-native';
 
 import { supabase } from '@/lib/supabase';
 import { useExerciseStore } from './exercise.store';
@@ -30,6 +33,7 @@ interface AuthState {
   initialize: () => Promise<void>;
   signUp: (email: string, password: string) => Promise<void>;
   signIn: (email: string, password: string) => Promise<void>;
+  signInWithGoogle: () => Promise<void>;
   signOut: () => Promise<void>;
   clearError: () => void;
 }
@@ -69,6 +73,52 @@ export const useAuthStore = create<AuthState>((set) => ({
     if (error) {
       set({ error: mapAuthError(error.message) });
       throw error;
+    }
+  },
+  async signInWithGoogle() {
+    set({ error: null });
+
+    // Web: a plain top-level redirect to Google and back is simplest —
+    // supabase-js picks the returned session up from the URL on reload
+    // (detectSessionInUrl in supabase.ts).
+    if (Platform.OS === 'web') {
+      const { error } = await supabase.auth.signInWithOAuth({
+        provider: 'google',
+        options: { redirectTo: `${window.location.origin}/auth` },
+      });
+      if (error) {
+        set({ error: mapAuthError(error.message) });
+        throw error;
+      }
+      return;
+    }
+
+    // Native has no address bar for supabase-js to read a session from, so
+    // the redirect is handled explicitly: open the consent screen in a
+    // system browser tab, capture the app-scheme redirect it completes
+    // with, and exchange the `code` it carries for a session ourselves.
+    const redirectTo = Linking.createURL('auth');
+    const { data, error } = await supabase.auth.signInWithOAuth({
+      provider: 'google',
+      options: { redirectTo, skipBrowserRedirect: true },
+    });
+    if (error) {
+      set({ error: mapAuthError(error.message) });
+      throw error;
+    }
+    if (!data.url) return;
+
+    const result = await WebBrowser.openAuthSessionAsync(data.url, redirectTo);
+    if (result.type !== 'success' || !result.url) return;
+
+    const { queryParams } = Linking.parse(result.url);
+    const code = queryParams?.code;
+    if (typeof code === 'string') {
+      const { error: exchangeError } = await supabase.auth.exchangeCodeForSession(code);
+      if (exchangeError) {
+        set({ error: mapAuthError(exchangeError.message) });
+        throw exchangeError;
+      }
     }
   },
   async signOut() {

@@ -1,7 +1,8 @@
 import { useState } from 'react';
-import { Pressable, Text, View } from 'react-native';
+import { ActivityIndicator, Pressable, Text, View } from 'react-native';
 import { Mail } from 'lucide-react-native';
 
+import { GoogleIcon } from '@/components/ui/GoogleIcon';
 import { PrimaryButton } from '@/components/ui/PrimaryButton';
 import { Screen } from '@/components/ui/Screen';
 import { TextField } from '@/components/ui/TextField';
@@ -15,6 +16,7 @@ export default function AuthScreen() {
   const colors = useThemeColors();
   const signIn = useAuthStore((s) => s.signIn);
   const signUp = useAuthStore((s) => s.signUp);
+  const signInWithGoogle = useAuthStore((s) => s.signInWithGoogle);
   const error = useAuthStore((s) => s.error);
   const clearError = useAuthStore((s) => s.clearError);
 
@@ -22,6 +24,7 @@ export default function AuthScreen() {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [submitting, setSubmitting] = useState(false);
+  const [googleSubmitting, setGoogleSubmitting] = useState(false);
   const [signUpSuccess, setSignUpSuccess] = useState(false);
 
   const canSubmit = email.trim().length > 3 && password.length >= 6 && !submitting;
@@ -40,6 +43,17 @@ export default function AuthScreen() {
       // error is already set on the store; nothing else to do here.
     } finally {
       setSubmitting(false);
+    }
+  }
+
+  async function handleGoogle() {
+    setGoogleSubmitting(true);
+    try {
+      await signInWithGoogle();
+    } catch {
+      // error is already set on the store; nothing else to do here.
+    } finally {
+      setGoogleSubmitting(false);
     }
   }
 
@@ -71,6 +85,27 @@ export default function AuthScreen() {
             La sincronización en la nube aún no está configurada en este servidor.
           </Text>
         </View>
+      ) : null}
+
+      {!signUpSuccess ? (
+        <>
+          <Pressable
+            onPress={handleGoogle}
+            disabled={googleSubmitting || !isSupabaseConfigured}
+            className={`flex-row items-center justify-center gap-3 rounded-2xl py-4 px-6 border border-border bg-muted/30 mb-5 ${
+              googleSubmitting || !isSupabaseConfigured ? 'opacity-50' : 'active:opacity-80'
+            }`}
+          >
+            {googleSubmitting ? <ActivityIndicator color={colors.foreground} size="small" /> : <GoogleIcon size={18} />}
+            <Text className="font-body-semibold text-base text-fg">Continuar con Google</Text>
+          </Pressable>
+
+          <View className="flex-row items-center gap-3 mb-5">
+            <View className="flex-1 h-px bg-border" />
+            <Text className="font-body text-muted text-xs">o con tu correo</Text>
+            <View className="flex-1 h-px bg-border" />
+          </View>
+        </>
       ) : null}
 
       {signUpSuccess ? (
