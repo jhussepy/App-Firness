@@ -423,7 +423,7 @@ export default function OnboardingScreen() {
                   <View className="h-1 w-12 rounded-full mt-2" style={{ backgroundColor: '#3B82F6' }} />
                 </View>
                 <View className="items-center flex-1">
-                  <Text className="font-body text-muted text-sm">Carbs</Text>
+                  <Text className="font-body text-muted text-sm">Carbos</Text>
                   <Text className="font-body-semibold text-fg text-lg mt-1">{calorieResult.macros.carbG} g</Text>
                   <View className="h-1 w-12 rounded-full mt-2" style={{ backgroundColor: '#F97316' }} />
                 </View>

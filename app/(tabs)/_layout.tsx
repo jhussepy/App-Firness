@@ -22,42 +22,42 @@ export default function TabsLayout() {
       <Tabs.Screen
         name="index"
         options={{
-          title: 'Dashboard',
+          title: 'Panel',
           tabBarIcon: ({ color, size }) => <LayoutDashboard color={color} size={size} />,
         }}
       />
       <Tabs.Screen
         name="workouts"
         options={{
-          title: 'Workouts',
+          title: 'Entrenar',
           tabBarIcon: ({ color, size }) => <Dumbbell color={color} size={size} />,
         }}
       />
       <Tabs.Screen
         name="nutrition"
         options={{
-          title: 'Nutrition',
+          title: 'Nutrición',
           tabBarIcon: ({ color, size }) => <Utensils color={color} size={size} />,
         }}
       />
       <Tabs.Screen
         name="progress"
         options={{
-          title: 'Progress',
+          title: 'Progreso',
           tabBarIcon: ({ color, size }) => <TrendingUp color={color} size={size} />,
         }}
       />
       <Tabs.Screen
         name="plans"
         options={{
-          title: 'Plans',
+          title: 'Planes',
           tabBarIcon: ({ color, size }) => <CalendarRange color={color} size={size} />,
         }}
       />
       <Tabs.Screen
         name="profile"
         options={{
-          title: 'Profile',
+          title: 'Perfil',
           tabBarIcon: ({ color, size }) => <User color={color} size={size} />,
         }}
       />

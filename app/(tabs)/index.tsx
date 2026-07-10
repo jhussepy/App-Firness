@@ -91,7 +91,7 @@ export default function DashboardScreen() {
               Aún no has programado ninguna rutina.
             </Text>
             <Pressable onPress={() => router.push('/(tabs)/plans')} className="mt-3 self-start active:opacity-70">
-              <Text className="font-body-semibold text-primary text-sm">Ir a Plans →</Text>
+              <Text className="font-body-semibold text-primary text-sm">Ir a Planes →</Text>
             </Pressable>
           </>
         )}

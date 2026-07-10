@@ -40,7 +40,7 @@ export function CalorieSummaryCard({ consumed, target }: CalorieSummaryCardProps
 
       <View className="flex-row w-full justify-between mt-5">
         <MacroBar label="Proteínas" consumed={consumed.proteinG} target={target.proteinG} color="#3B82F6" />
-        <MacroBar label="Carbs" consumed={consumed.carbG} target={target.carbG} color="#F97316" />
+        <MacroBar label="Carbos" consumed={consumed.carbG} target={target.carbG} color="#F97316" />
         <MacroBar label="Grasas" consumed={consumed.fatG} target={target.fatG} color="#EAB308" />
       </View>
     </View>

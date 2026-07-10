@@ -12,9 +12,10 @@ const SEED_VERSION_KEY = 'seed-version';
 const LEGACY_SEEDED_FLAG_KEY = 'has-seeded';
 
 // Bump this whenever seed content changes (e.g. v2 added per-exercise
-// instructions). Re-seeding upserts by id, so user-created custom items and
-// edits to non-seed data are preserved — only the seed rows are refreshed.
-const CURRENT_SEED_VERSION = 2;
+// instructions, v3 translated routine names/descriptions to Spanish).
+// Re-seeding upserts by id, so user-created custom items and edits to
+// non-seed data are preserved — only the seed rows are refreshed.
+const CURRENT_SEED_VERSION = 3;
 
 export async function ensureSeeded(): Promise<void> {
   let version = (await readJSON<number>(SEED_VERSION_KEY)) ?? 0;

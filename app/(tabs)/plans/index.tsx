@@ -26,7 +26,7 @@ export default function PlansScreen() {
     <Screen>
       <View className="pt-4 pb-4 flex-row items-start justify-between">
         <View>
-          <Text className="font-display-bold text-3xl text-fg">Plans</Text>
+          <Text className="font-display-bold text-3xl text-fg">Planes</Text>
           <Text className="font-body text-base text-muted mt-1">Rutinas predefinidas y personalizadas</Text>
         </View>
         <Pressable

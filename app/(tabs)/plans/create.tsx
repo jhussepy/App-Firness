@@ -95,7 +95,7 @@ export default function CreateRoutineScreen() {
                   </Pressable>
                 </View>
                 <View className="flex-row items-center gap-2">
-                  <Text className="font-body text-muted text-sm">Reps</Text>
+                  <Text className="font-body text-muted text-sm">Repeticiones</Text>
                   <TextInput
                     value={re.targetReps}
                     onChangeText={(v) => updateExercise(re.exerciseId, { targetReps: v })}

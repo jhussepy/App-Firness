@@ -30,7 +30,7 @@ export default function WorkoutsScreen() {
   return (
     <Screen>
       <View className="pt-4 pb-4">
-        <Text className="font-display-bold text-3xl text-fg">Workouts</Text>
+        <Text className="font-display-bold text-3xl text-fg">Entrenamientos</Text>
         <Text className="font-body text-base text-muted mt-1">Tu historial de entrenamientos</Text>
       </View>
 

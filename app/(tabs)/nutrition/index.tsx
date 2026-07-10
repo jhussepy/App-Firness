@@ -48,7 +48,7 @@ export default function NutritionScreen() {
   return (
     <Screen>
       <View className="pt-4 pb-3">
-        <Text className="font-display-bold text-3xl text-fg">Nutrition</Text>
+        <Text className="font-display-bold text-3xl text-fg">Nutrición</Text>
       </View>
 
       <DayStrip selectedDate={selectedDate} onSelectDate={setSelectedDate} loggedDates={loggedDates} />

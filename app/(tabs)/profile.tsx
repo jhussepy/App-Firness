@@ -54,7 +54,7 @@ export default function ProfileScreen() {
                 <Text className="font-body-semibold text-fg mt-0.5">{profile.dailyMacroTargets.proteinG} g</Text>
               </View>
               <View className="items-center flex-1">
-                <Text className="font-body text-muted text-xs">Carbs</Text>
+                <Text className="font-body text-muted text-xs">Carbos</Text>
                 <Text className="font-body-semibold text-fg mt-0.5">{profile.dailyMacroTargets.carbG} g</Text>
               </View>
               <View className="items-center flex-1">

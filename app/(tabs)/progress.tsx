@@ -89,7 +89,7 @@ export default function ProgressScreen() {
   return (
     <Screen>
       <View className="pt-4 pb-4">
-        <Text className="font-display-bold text-3xl text-fg">Progress</Text>
+        <Text className="font-display-bold text-3xl text-fg">Progreso</Text>
       </View>
 
       <View className="flex-row gap-3 mb-5">

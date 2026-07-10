@@ -135,7 +135,7 @@ export default function SessionDetailScreen() {
                   <View key={set.id} className="flex-row justify-between py-1.5 border-b border-border">
                     <Text className="font-body text-muted">Serie {set.setNumber}</Text>
                     <Text className="font-body-medium text-fg">
-                      {set.reps} reps × {set.weightKg} kg
+                      {set.reps} repeticiones × {set.weightKg} kg
                     </Text>
                   </View>
                 ))}

@@ -7,8 +7,9 @@ function re(exerciseId: string, targetSets: number, targetReps: string, order: n
 export const seedRoutines: Routine[] = [
   {
     id: 'routine-full-body-3x',
-    name: 'Full Body 3x/Week',
-    description: 'A balanced full-body routine for 3 non-consecutive days a week. Great starting point for beginners.',
+    name: 'Cuerpo Completo 3x/Semana',
+    description:
+      'Rutina equilibrada de cuerpo completo para 3 días no consecutivos a la semana. Un gran punto de partida para principiantes.',
     isCustom: false,
     exercises: [
       re('barbell-squat', 3, '8-10', 1),
@@ -20,8 +21,8 @@ export const seedRoutines: Routine[] = [
   },
   {
     id: 'routine-push-pull-legs',
-    name: 'Push / Pull / Legs',
-    description: 'Classic 6-day split: push (chest/shoulders/triceps), pull (back/biceps), legs.',
+    name: 'Empuje / Tracción / Piernas',
+    description: 'Split clásico de 6 días: empuje (pecho/hombros/tríceps), tracción (espalda/bíceps), piernas.',
     isCustom: false,
     exercises: [
       re('barbell-bench-press', 4, '6-8', 1),
@@ -33,8 +34,8 @@ export const seedRoutines: Routine[] = [
   },
   {
     id: 'routine-beginner-strength',
-    name: 'Beginner Strength',
-    description: 'Simple compound-lift focused program to build a strength base.',
+    name: 'Fuerza para Principiantes',
+    description: 'Programa sencillo centrado en levantamientos compuestos para construir una base de fuerza.',
     isCustom: false,
     exercises: [
       re('barbell-squat', 3, '5', 1),
@@ -45,8 +46,8 @@ export const seedRoutines: Routine[] = [
   },
   {
     id: 'routine-upper-lower',
-    name: 'Upper / Lower Split',
-    description: '4-day split alternating upper body and lower body sessions.',
+    name: 'Tren Superior / Tren Inferior',
+    description: 'Split de 4 días alternando sesiones de tren superior e inferior.',
     isCustom: false,
     exercises: [
       re('dumbbell-bench-press', 4, '8-10', 1),
@@ -58,8 +59,8 @@ export const seedRoutines: Routine[] = [
   },
   {
     id: 'routine-home-bodyweight',
-    name: 'Home Bodyweight',
-    description: 'No-equipment routine for training anywhere.',
+    name: 'Peso Corporal en Casa',
+    description: 'Rutina sin equipo para entrenar en cualquier lugar.',
     isCustom: false,
     exercises: [
       re('push-up', 3, '12-20', 1),
