@@ -1,6 +1,7 @@
 import { useEffect, useMemo, useState } from 'react';
-import { Text, View } from 'react-native';
+import { Pressable, Text, View } from 'react-native';
 import { useRouter } from 'expo-router';
+import { Camera } from 'lucide-react-native';
 
 import { CalorieSummaryCard } from '@/components/nutrition/CalorieSummaryCard';
 import { DayStrip } from '@/components/nutrition/DayStrip';
@@ -47,8 +48,15 @@ export default function NutritionScreen() {
 
   return (
     <Screen>
-      <View className="pt-4 pb-3">
+      <View className="pt-4 pb-3 flex-row items-center justify-between">
         <Text className="font-display-bold text-3xl text-fg">Nutrición</Text>
+        <Pressable
+          onPress={() => router.push({ pathname: '/(tabs)/nutrition/scan', params: { date: selectedDate } })}
+          accessibilityLabel="Escanear comida"
+          className="w-10 h-10 rounded-full bg-primary items-center justify-center active:opacity-85"
+        >
+          <Camera color="white" size={20} />
+        </Pressable>
       </View>
 
       <DayStrip selectedDate={selectedDate} onSelectDate={setSelectedDate} loggedDates={loggedDates} />
