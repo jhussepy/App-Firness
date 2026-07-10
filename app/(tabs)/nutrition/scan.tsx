@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import { ActivityIndicator, Image, Pressable, Text, View } from 'react-native';
 import { useLocalSearchParams, useRouter } from 'expo-router';
+import * as ImageManipulator from 'expo-image-manipulator';
 import * as ImagePicker from 'expo-image-picker';
 import { Camera, Image as ImageIcon, RotateCcw } from 'lucide-react-native';
 
@@ -37,7 +38,17 @@ export default function ScanFoodScreen() {
     setPhotoUri(asset.uri);
     setStatus('scanning');
     try {
-      const base64 = asset.base64 ?? '';
+      // Re-compress and cap the width before upload — on a slow connection
+      // (reported failures traced back to ~0.5 kB/s uploads) a full-resolution
+      // phone photo can take minutes to reach the server and time out well
+      // before LogMeal ever sees it. 900px is plenty for food recognition.
+      const needsResize = (asset.width ?? 0) > 900;
+      const manipulated = await ImageManipulator.manipulateAsync(
+        asset.uri,
+        needsResize ? [{ resize: { width: 900 } }] : [],
+        { compress: 0.5, format: ImageManipulator.SaveFormat.JPEG, base64: true }
+      );
+      const base64 = manipulated.base64 ?? asset.base64 ?? '';
       const scanResult = await scanFoodPhoto(base64);
       setResult(scanResult);
       setStatus('result');
@@ -54,7 +65,6 @@ export default function ScanFoodScreen() {
     const picked = await ImagePicker.launchImageLibraryAsync({
       mediaTypes: ['images'],
       quality: 0.5,
-      base64: true,
     });
     if (!picked.canceled && picked.assets[0]) {
       await runScan(picked.assets[0]);
@@ -66,7 +76,6 @@ export default function ScanFoodScreen() {
     if (!permission.granted) return;
     const taken = await ImagePicker.launchCameraAsync({
       quality: 0.5,
-      base64: true,
     });
     if (!taken.canceled && taken.assets[0]) {
       await runScan(taken.assets[0]);

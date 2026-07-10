@@ -30,22 +30,34 @@ const ERROR_MESSAGES: Record<string, string> = {
   server_misconfigured: 'El escáner no está disponible en este momento.',
   upstream_error: 'No se pudo conectar con el servicio de reconocimiento.',
   network_error: 'Sin conexión. Revisa tu internet e intenta de nuevo.',
+  timeout: 'Tu conexión está muy lenta para subir la foto. Intenta con mejor señal o WiFi.',
 };
 
 export function foodScanErrorMessage(code: string): string {
   return ERROR_MESSAGES[code] ?? ERROR_MESSAGES.upstream_error;
 }
 
+// Matches the server's own maxDuration (vercel.json) — without a client-side
+// cap, a stalled upload on a very slow connection just hangs on "Analizando
+// tu comida..." indefinitely instead of failing with an actionable message.
+const REQUEST_TIMEOUT_MS = 60_000;
+
 export async function scanFoodPhoto(imageBase64: string): Promise<FoodScanResult> {
+  const controller = new AbortController();
+  const timeoutId = setTimeout(() => controller.abort(), REQUEST_TIMEOUT_MS);
+
   let response: Response;
   try {
     response = await fetch(`${API_BASE_URL}/api/food-scan`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ imageBase64 }),
+      signal: controller.signal,
     });
-  } catch {
-    throw new FoodScanError('network_error');
+  } catch (err) {
+    throw new FoodScanError(err instanceof Error && err.name === 'AbortError' ? 'timeout' : 'network_error');
+  } finally {
+    clearTimeout(timeoutId);
   }
 
   if (!response.ok) {
