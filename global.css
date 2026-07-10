@@ -14,8 +14,8 @@
 }
 
 .dark {
-  --color-bg: 31 41 55;
-  --color-fg: 248 250 252;
-  --color-muted: 55 65 79;
-  --color-border: 55 65 81;
+  --color-bg: 0 0 0;
+  --color-fg: 250 250 250;
+  --color-muted: 113 113 122;
+  --color-border: 39 39 42;
 }

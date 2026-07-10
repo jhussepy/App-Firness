@@ -10,10 +10,10 @@
     "fat": "#EAB308"
   },
   "dark": {
-    "background": "#1F2937",
-    "foreground": "#F8FAFC",
-    "muted": "#37414F",
-    "border": "#374151"
+    "background": "#000000",
+    "foreground": "#FAFAFA",
+    "muted": "#71717A",
+    "border": "#27272A"
   },
   "light": {
     "background": "#F8FAFC",

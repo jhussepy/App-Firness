@@ -139,9 +139,9 @@ interface FigureProps {
 }
 
 function Figure({ side, muscleGroup, isDark }: FigureProps) {
-  const bodyTop = isDark ? '#4C5B74' : '#E4EAF2';
-  const bodyBottom = isDark ? '#2C3746' : '#B7C3D3';
-  const headTone = isDark ? '#465468' : '#D5DDE8';
+  const bodyTop = isDark ? '#52525B' : '#E4EAF2';
+  const bodyBottom = isDark ? '#27272A' : '#B7C3D3';
+  const headTone = isDark ? '#3F3F46' : '#D5DDE8';
   const shadow = isDark ? '#000000' : '#334155';
   const { shapes, glow } = musclesFor(side, muscleGroup);
   const ids = `${side}`;
