@@ -3,6 +3,7 @@ import { Pressable, Text, View } from 'react-native';
 import { useRouter } from 'expo-router';
 import { LogOut } from 'lucide-react-native';
 
+import { LoadingState } from '@/components/ui/LoadingState';
 import { Screen } from '@/components/ui/Screen';
 import { useAuthStore } from '@/stores/auth.store';
 import { useProfileStore } from '@/stores/profile.store';
@@ -28,6 +29,7 @@ export default function ProfileScreen() {
   const router = useRouter();
   const colors = useThemeColors();
   const profile = useProfileStore((s) => s.profile);
+  const isLoaded = useProfileStore((s) => s.isLoaded);
   const load = useProfileStore((s) => s.load);
   const mode = useThemeStore((s) => s.mode);
   const toggle = useThemeStore((s) => s.toggle);
@@ -37,6 +39,14 @@ export default function ProfileScreen() {
   useEffect(() => {
     load();
   }, [load]);
+
+  if (!isLoaded) {
+    return (
+      <Screen>
+        <LoadingState />
+      </Screen>
+    );
+  }
 
   return (
     <Screen>

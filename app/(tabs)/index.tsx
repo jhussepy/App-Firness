@@ -4,6 +4,7 @@ import { useRouter } from 'expo-router';
 import { Camera, CalendarRange, Dumbbell, Flame, Minus, Scale, TrendingDown, TrendingUp } from 'lucide-react-native';
 
 import { CalorieSummaryCard } from '@/components/nutrition/CalorieSummaryCard';
+import { LoadingState } from '@/components/ui/LoadingState';
 import { PrimaryButton } from '@/components/ui/PrimaryButton';
 import { Screen } from '@/components/ui/Screen';
 import { todayISODate } from '@/lib/date';
@@ -23,6 +24,7 @@ export default function DashboardScreen() {
   const colors = useThemeColors();
 
   const profile = useProfileStore((s) => s.profile);
+  const isProfileLoaded = useProfileStore((s) => s.isLoaded);
   const loadProfile = useProfileStore((s) => s.load);
 
   const { foods, entries, isLoaded: isNutritionLoaded, load: loadNutrition } = useNutritionStore();
@@ -63,6 +65,8 @@ export default function DashboardScreen() {
   const previousWeight = weightMetrics[weightMetrics.length - 2];
   const weightDelta = latestWeight && previousWeight ? latestWeight.value - previousWeight.value : 0;
 
+  const isAllLoaded = isProfileLoaded && isNutritionLoaded && isPlanLoaded && isMetricsLoaded;
+
   const next = findNextScheduledRoutine(scheduledRoutines, routines);
 
   function handleStartNext() {
@@ -85,6 +89,9 @@ export default function DashboardScreen() {
         <Text className="font-body text-base text-muted mt-1">Este es tu resumen de hoy.</Text>
       </View>
 
+      {!isAllLoaded ? (
+        <LoadingState />
+      ) : (
       <View className="md:flex-row md:gap-4">
         <View className="md:flex-1">
           {profile?.dailyCalorieTarget ? <CalorieSummaryCard consumed={consumed} target={target} /> : null}
@@ -178,6 +185,7 @@ export default function DashboardScreen() {
           </View>
         </View>
       </View>
+      )}
     </Screen>
   );
 }

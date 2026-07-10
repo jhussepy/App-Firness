@@ -6,6 +6,7 @@ import { Camera } from 'lucide-react-native';
 import { CalorieSummaryCard } from '@/components/nutrition/CalorieSummaryCard';
 import { DayStrip } from '@/components/nutrition/DayStrip';
 import { MealSection } from '@/components/nutrition/MealSection';
+import { LoadingState } from '@/components/ui/LoadingState';
 import { Screen } from '@/components/ui/Screen';
 import { toLocalISODate, todayISODate } from '@/lib/date';
 import { entriesForDate, entriesForMeal, macroTargetsToTotals, totalsForEntries } from '@/lib/nutrition-totals';
@@ -62,27 +63,33 @@ export default function NutritionScreen() {
         </Pressable>
       </View>
 
-      <DayStrip selectedDate={selectedDate} onSelectDate={setSelectedDate} loggedDates={loggedDates} />
+      {!isLoaded ? (
+        <LoadingState />
+      ) : (
+        <>
+          <DayStrip selectedDate={selectedDate} onSelectDate={setSelectedDate} loggedDates={loggedDates} />
 
-      <CalorieSummaryCard consumed={consumed} target={target} />
+          <CalorieSummaryCard consumed={consumed} target={target} />
 
-      {meals.map((meal) => {
-        const mealEntries = entriesForMeal(todaysEntries, meal);
-        const mealTotals = totalsForEntries(mealEntries, foods);
-        return (
-          <MealSection
-            key={meal}
-            title={MEAL_LABELS[meal]}
-            entries={mealEntries}
-            foods={foods}
-            totalCalories={mealTotals.calories}
-            onAddFood={() =>
-              router.push({ pathname: '/(tabs)/nutrition/food-picker', params: { meal, date: selectedDate } })
-            }
-            onRemoveEntry={removeEntry}
-          />
-        );
-      })}
+          {meals.map((meal) => {
+            const mealEntries = entriesForMeal(todaysEntries, meal);
+            const mealTotals = totalsForEntries(mealEntries, foods);
+            return (
+              <MealSection
+                key={meal}
+                title={MEAL_LABELS[meal]}
+                entries={mealEntries}
+                foods={foods}
+                totalCalories={mealTotals.calories}
+                onAddFood={() =>
+                  router.push({ pathname: '/(tabs)/nutrition/food-picker', params: { meal, date: selectedDate } })
+                }
+                onRemoveEntry={removeEntry}
+              />
+            );
+          })}
+        </>
+      )}
     </Screen>
   );
 }

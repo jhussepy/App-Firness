@@ -4,6 +4,7 @@ import { useRouter } from 'expo-router';
 import { Plus } from 'lucide-react-native';
 
 import { RoutineCard } from '@/components/plans/RoutineCard';
+import { LoadingState } from '@/components/ui/LoadingState';
 import { Screen } from '@/components/ui/Screen';
 import { usePlanStore } from '@/stores/plan.store';
 
@@ -38,14 +39,18 @@ export default function PlansScreen() {
         </Pressable>
       </View>
 
-      {routines.map((routine) => (
-        <RoutineCard
-          key={routine.id}
-          routine={routine}
-          scheduledDays={daysFor(routine.id)}
-          onPress={() => router.push(`/(tabs)/plans/${routine.id}`)}
-        />
-      ))}
+      {!isLoaded ? (
+        <LoadingState />
+      ) : (
+        routines.map((routine) => (
+          <RoutineCard
+            key={routine.id}
+            routine={routine}
+            scheduledDays={daysFor(routine.id)}
+            onPress={() => router.push(`/(tabs)/plans/${routine.id}`)}
+          />
+        ))
+      )}
     </Screen>
   );
 }

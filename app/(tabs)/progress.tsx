@@ -4,6 +4,7 @@ import { Dumbbell, Flame, Scale } from 'lucide-react-native';
 
 import { MetricTrendChart } from '@/components/progress/MetricTrendChart';
 import { StatCard } from '@/components/progress/StatCard';
+import { LoadingState } from '@/components/ui/LoadingState';
 import { Screen } from '@/components/ui/Screen';
 import { formatShortDate, toLocalISODate } from '@/lib/date';
 import { entriesForDate, totalsForEntries } from '@/lib/nutrition-totals';
@@ -58,6 +59,8 @@ export default function ProgressScreen() {
     [history]
   );
 
+  const isAllLoaded = isMetricsLoaded && isHistoryLoaded && isNutritionLoaded;
+
   const currentWeight = weightPoints.length > 0 ? weightPoints[weightPoints.length - 1].value : undefined;
 
   const workoutsThisMonth = useMemo(() => {
@@ -92,52 +95,58 @@ export default function ProgressScreen() {
         <Text className="font-display-bold text-3xl text-fg">Progreso</Text>
       </View>
 
-      <View className="flex-row gap-3 mb-5">
-        <StatCard
-          icon={<Scale color={colors.primary} size={20} />}
-          label="Peso actual"
-          value={currentWeight ? `${currentWeight} kg` : '—'}
-        />
-        <StatCard
-          icon={<Dumbbell color={colors.primary} size={20} />}
-          label="Entrenamientos este mes"
-          value={String(workoutsThisMonth)}
-        />
-        <StatCard
-          icon={<Flame color={colors.primary} size={20} />}
-          label="Kcal prom. (7 días)"
-          value={avgCalories7Day.toLocaleString()}
-        />
-      </View>
+      {!isAllLoaded ? (
+        <LoadingState />
+      ) : (
+        <>
+          <View className="flex-row gap-3 mb-5">
+            <StatCard
+              icon={<Scale color={colors.primary} size={20} />}
+              label="Peso actual"
+              value={currentWeight ? `${currentWeight} kg` : '—'}
+            />
+            <StatCard
+              icon={<Dumbbell color={colors.primary} size={20} />}
+              label="Entrenamientos este mes"
+              value={String(workoutsThisMonth)}
+            />
+            <StatCard
+              icon={<Flame color={colors.primary} size={20} />}
+              label="Kcal prom. (7 días)"
+              value={avgCalories7Day.toLocaleString()}
+            />
+          </View>
 
-      <Text className="font-body-semibold text-fg text-base mb-2">Tendencia de peso</Text>
-      <View className="mb-3">
-        <MetricTrendChart points={weightPoints} unit="kg" emptyMessage="Aún no hay registros de peso." />
-      </View>
-      <View className="flex-row items-center gap-2 mb-6">
-        <TextInput
-          value={newWeight}
-          onChangeText={setNewWeight}
-          placeholder="Nuevo peso (kg)"
-          placeholderTextColor={colors.muted}
-          keyboardType="decimal-pad"
-          className="flex-1 bg-muted/30 border border-border rounded-2xl px-4 py-3 font-body text-fg"
-        />
-        <Pressable
-          onPress={handleLogWeight}
-          className="bg-primary rounded-2xl px-5 py-3.5 active:opacity-85"
-        >
-          <Text className="font-body-semibold text-white">Registrar</Text>
-        </Pressable>
-      </View>
+          <Text className="font-body-semibold text-fg text-base mb-2">Tendencia de peso</Text>
+          <View className="mb-3">
+            <MetricTrendChart points={weightPoints} unit="kg" emptyMessage="Aún no hay registros de peso." />
+          </View>
+          <View className="flex-row items-center gap-2 mb-6">
+            <TextInput
+              value={newWeight}
+              onChangeText={setNewWeight}
+              placeholder="Nuevo peso (kg)"
+              placeholderTextColor={colors.muted}
+              keyboardType="decimal-pad"
+              className="flex-1 bg-muted/30 border border-border rounded-2xl px-4 py-3 font-body text-fg"
+            />
+            <Pressable
+              onPress={handleLogWeight}
+              className="bg-primary rounded-2xl px-5 py-3.5 active:opacity-85"
+            >
+              <Text className="font-body-semibold text-white">Registrar</Text>
+            </Pressable>
+          </View>
 
-      <Text className="font-body-semibold text-fg text-base mb-2">Volumen de entrenamiento</Text>
-      <MetricTrendChart
-        points={volumePoints}
-        unit="kg"
-        decimals={0}
-        emptyMessage="Completa entrenamientos para ver tu volumen total."
-      />
+          <Text className="font-body-semibold text-fg text-base mb-2">Volumen de entrenamiento</Text>
+          <MetricTrendChart
+            points={volumePoints}
+            unit="kg"
+            decimals={0}
+            emptyMessage="Completa entrenamientos para ver tu volumen total."
+          />
+        </>
+      )}
     </Screen>
   );
 }
