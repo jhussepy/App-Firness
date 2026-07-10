@@ -5,6 +5,7 @@ import { Camera } from 'lucide-react-native';
 
 import { CalorieSummaryCard } from '@/components/nutrition/CalorieSummaryCard';
 import { DayStrip } from '@/components/nutrition/DayStrip';
+import { FoodDetailModal } from '@/components/nutrition/FoodDetailModal';
 import { MealSection } from '@/components/nutrition/MealSection';
 import { LoadingState } from '@/components/ui/LoadingState';
 import { Screen } from '@/components/ui/Screen';
@@ -26,8 +27,9 @@ export default function NutritionScreen() {
   const router = useRouter();
   const profile = useProfileStore((s) => s.profile);
   const loadProfile = useProfileStore((s) => s.load);
-  const { foods, entries, isLoaded, load, removeEntry } = useNutritionStore();
+  const { foods, entries, isLoaded, load, removeEntry, updateEntryServings } = useNutritionStore();
   const [selectedDate, setSelectedDate] = useState(todayISODate());
+  const [selectedEntryId, setSelectedEntryId] = useState<string | null>(null);
 
   useEffect(() => {
     if (!isLoaded) load();
@@ -49,6 +51,9 @@ export default function NutritionScreen() {
     [entries]
   );
   const meals = profile?.includedMeals ?? ['breakfast', 'lunch', 'dinner'];
+
+  const selectedEntry = entries.find((e) => e.id === selectedEntryId);
+  const selectedFood = foods.find((f) => f.id === selectedEntry?.foodId);
 
   return (
     <Screen>
@@ -84,12 +89,21 @@ export default function NutritionScreen() {
                 onAddFood={() =>
                   router.push({ pathname: '/(tabs)/nutrition/food-picker', params: { meal, date: selectedDate } })
                 }
+                onPressEntry={setSelectedEntryId}
                 onRemoveEntry={removeEntry}
               />
             );
           })}
         </>
       )}
+
+      <FoodDetailModal
+        food={selectedFood}
+        entry={selectedEntry}
+        onClose={() => setSelectedEntryId(null)}
+        onSave={updateEntryServings}
+        onDelete={removeEntry}
+      />
     </Screen>
   );
 }

@@ -4,7 +4,7 @@ import { useFonts } from 'expo-font';
 import { Stack, useRouter, useSegments } from 'expo-router';
 import * as SplashScreen from 'expo-splash-screen';
 import { useEffect } from 'react';
-import { LogBox, View } from 'react-native';
+import { LogBox, Platform, View } from 'react-native';
 import { GestureHandlerRootView } from 'react-native-gesture-handler';
 import { SafeAreaProvider } from 'react-native-safe-area-context';
 
@@ -39,6 +39,16 @@ export default function RootLayout() {
   useEffect(() => {
     if (session) loadProfile();
   }, [session, loadProfile]);
+
+  // react-native-web's <Modal> portals its content to document.body, outside
+  // the root <View>'s `dark` class — mirroring the class onto <html> keeps
+  // portaled content (any Modal, present or future) in the same dark/light
+  // CSS-variable scope as the rest of the app instead of silently falling
+  // back to the light-mode `:root` values.
+  useEffect(() => {
+    if (Platform.OS !== 'web' || typeof document === 'undefined') return;
+    document.documentElement.classList.toggle('dark', mode === 'dark');
+  }, [mode]);
 
   const isReady = (fontsLoaded || !!fontError) && isAuthLoaded && (!session || isProfileLoaded);
 

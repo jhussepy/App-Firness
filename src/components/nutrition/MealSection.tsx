@@ -11,10 +11,19 @@ interface MealSectionProps {
   foods: FoodItem[];
   totalCalories: number;
   onAddFood: () => void;
+  onPressEntry: (entryId: string) => void;
   onRemoveEntry: (entryId: string) => void;
 }
 
-export function MealSection({ title, entries, foods, totalCalories, onAddFood, onRemoveEntry }: MealSectionProps) {
+export function MealSection({
+  title,
+  entries,
+  foods,
+  totalCalories,
+  onAddFood,
+  onPressEntry,
+  onRemoveEntry,
+}: MealSectionProps) {
   const colors = useThemeColors();
   const foodById = new Map(foods.map((f) => [f.id, f]));
 
@@ -37,7 +46,13 @@ export function MealSection({ title, entries, foods, totalCalories, onAddFood, o
           const food = foodById.get(entry.foodId);
           if (!food) return null;
           return (
-            <FoodLogRow key={entry.id} food={food} servings={entry.servings} onRemove={() => onRemoveEntry(entry.id)} />
+            <FoodLogRow
+              key={entry.id}
+              food={food}
+              servings={entry.servings}
+              onPress={() => onPressEntry(entry.id)}
+              onRemove={() => onRemoveEntry(entry.id)}
+            />
           );
         })
       )}

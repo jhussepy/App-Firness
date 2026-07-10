@@ -12,6 +12,7 @@ interface NutritionState {
   isLoaded: boolean;
   load: () => Promise<void>;
   logFood: (foodId: string, mealType: MealSlot, servings: number, date?: string) => Promise<void>;
+  updateEntryServings: (entryId: string, servings: number) => Promise<void>;
   removeEntry: (entryId: string) => Promise<void>;
   addCustomFood: (food: Omit<FoodItem, 'id' | 'isCustom'>) => Promise<FoodItem>;
 }
@@ -53,6 +54,13 @@ export const useNutritionStore = create<NutritionState>((set, get) => ({
     };
     await foodEntryRepository.upsert(entry);
     set((state) => ({ entries: [...state.entries, entry] }));
+  },
+  async updateEntryServings(entryId, servings) {
+    const current = get().entries.find((e) => e.id === entryId);
+    if (!current) return;
+    const updated: FoodEntry = { ...current, servings };
+    await foodEntryRepository.upsert(updated);
+    set((state) => ({ entries: state.entries.map((e) => (e.id === entryId ? updated : e)) }));
   },
   async removeEntry(entryId) {
     await foodEntryRepository.remove(entryId);
