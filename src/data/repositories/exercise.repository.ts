@@ -1,8 +1,5 @@
-import { createCollectionRepository } from './repository.interface';
-import { readJSON, writeJSON } from '../storage/async-storage.adapter';
+import { createHybridRepository } from './hybrid-collection.repository';
+import { seedExercises } from '../seed/exercises.seed';
 import type { Exercise } from '../models/exercise';
 
-export const exerciseRepository = createCollectionRepository<Exercise>('exercises', {
-  readJSON,
-  writeJSON,
-});
+export const exerciseRepository = createHybridRepository<Exercise>('exercises', seedExercises);

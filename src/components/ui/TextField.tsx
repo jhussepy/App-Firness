@@ -10,9 +10,20 @@ interface TextFieldProps {
   placeholder?: string;
   keyboardType?: KeyboardTypeOptions;
   suffix?: string;
+  secureTextEntry?: boolean;
+  autoCapitalize?: 'none' | 'sentences' | 'words' | 'characters';
 }
 
-export function TextField({ label, value, onChangeText, placeholder, keyboardType, suffix }: TextFieldProps) {
+export function TextField({
+  label,
+  value,
+  onChangeText,
+  placeholder,
+  keyboardType,
+  suffix,
+  secureTextEntry,
+  autoCapitalize,
+}: TextFieldProps) {
   const colors = useThemeColors();
 
   return (
@@ -25,6 +36,8 @@ export function TextField({ label, value, onChangeText, placeholder, keyboardTyp
           placeholder={placeholder}
           placeholderTextColor={colors.muted}
           keyboardType={keyboardType}
+          secureTextEntry={secureTextEntry}
+          autoCapitalize={autoCapitalize}
           className="flex-1 py-4 font-body text-base text-fg"
         />
         {suffix ? <Text className="font-body text-base text-muted">{suffix}</Text> : null}

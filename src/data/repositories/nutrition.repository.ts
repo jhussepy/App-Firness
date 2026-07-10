@@ -1,13 +1,8 @@
-import { createCollectionRepository } from './repository.interface';
-import { readJSON, writeJSON } from '../storage/async-storage.adapter';
+import { createHybridRepository } from './hybrid-collection.repository';
+import { createSupabaseCollectionRepository } from './supabase-collection.repository';
+import { seedFoods } from '../seed/foods.seed';
 import type { FoodEntry, FoodItem } from '../models/nutrition';
 
-export const foodRepository = createCollectionRepository<FoodItem>('foods', {
-  readJSON,
-  writeJSON,
-});
+export const foodRepository = createHybridRepository<FoodItem>('foods', seedFoods);
 
-export const foodEntryRepository = createCollectionRepository<FoodEntry>('food-entries', {
-  readJSON,
-  writeJSON,
-});
+export const foodEntryRepository = createSupabaseCollectionRepository<FoodEntry>('food-entries');

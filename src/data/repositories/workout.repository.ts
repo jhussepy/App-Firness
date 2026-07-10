@@ -1,8 +1,4 @@
-import { createCollectionRepository } from './repository.interface';
-import { readJSON, writeJSON } from '../storage/async-storage.adapter';
+import { createSupabaseCollectionRepository } from './supabase-collection.repository';
 import type { WorkoutSession } from '../models/workout';
 
-export const workoutRepository = createCollectionRepository<WorkoutSession>('workout-sessions', {
-  readJSON,
-  writeJSON,
-});
+export const workoutRepository = createSupabaseCollectionRepository<WorkoutSession>('workout-sessions');

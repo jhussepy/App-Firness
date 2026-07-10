@@ -1,8 +1,4 @@
-import { createCollectionRepository } from './repository.interface';
-import { readJSON, writeJSON } from '../storage/async-storage.adapter';
+import { createSupabaseCollectionRepository } from './supabase-collection.repository';
 import type { ProgressMetric } from '../models/progress';
 
-export const progressRepository = createCollectionRepository<ProgressMetric>('progress-metrics', {
-  readJSON,
-  writeJSON,
-});
+export const progressRepository = createSupabaseCollectionRepository<ProgressMetric>('progress-metrics');

@@ -8,8 +8,8 @@ import { LogBox, View } from 'react-native';
 import { GestureHandlerRootView } from 'react-native-gesture-handler';
 import { SafeAreaProvider } from 'react-native-safe-area-context';
 
-import { ensureSeeded } from '@/data/seed/seed-loader';
 import { fontAssets } from '@/theme/fonts';
+import { useAuthStore } from '@/stores/auth.store';
 import { useProfileStore } from '@/stores/profile.store';
 import { useThemeStore } from '@/stores/theme.store';
 
@@ -28,26 +28,38 @@ export default function RootLayout() {
   const profile = useProfileStore((s) => s.profile);
   const isProfileLoaded = useProfileStore((s) => s.isLoaded);
   const loadProfile = useProfileStore((s) => s.load);
+  const session = useAuthStore((s) => s.session);
+  const isAuthLoaded = useAuthStore((s) => s.isLoaded);
+  const initializeAuth = useAuthStore((s) => s.initialize);
 
   useEffect(() => {
-    ensureSeeded();
-    loadProfile();
-  }, [loadProfile]);
+    initializeAuth();
+  }, [initializeAuth]);
 
-  const isReady = (fontsLoaded || !!fontError) && isProfileLoaded;
+  useEffect(() => {
+    if (session) loadProfile();
+  }, [session, loadProfile]);
+
+  const isReady = (fontsLoaded || !!fontError) && isAuthLoaded && (!session || isProfileLoaded);
 
   useEffect(() => {
     if (!isReady) return;
     SplashScreen.hideAsync();
 
+    const inAuth = segments[0] === 'auth';
     const inOnboarding = segments[0] === 'onboarding';
     const isOnboarded = !!profile?.onboardingCompletedAt;
-    if (!isOnboarded && !inOnboarding) {
+
+    if (!session && !inAuth) {
+      router.replace('/auth');
+    } else if (session && inAuth) {
+      router.replace(isOnboarded ? '/(tabs)' : '/onboarding');
+    } else if (session && !isOnboarded && !inOnboarding) {
       router.replace('/onboarding');
-    } else if (isOnboarded && inOnboarding) {
+    } else if (session && isOnboarded && inOnboarding) {
       router.replace('/(tabs)');
     }
-  }, [isReady, profile, segments, router]);
+  }, [isReady, session, profile, segments, router]);
 
   if (!isReady) {
     return null;
@@ -58,6 +70,7 @@ export default function RootLayout() {
       <SafeAreaProvider>
         <View className={`flex-1 bg-bg ${mode === 'dark' ? 'dark' : ''}`}>
           <Stack screenOptions={{ headerShown: false }}>
+            <Stack.Screen name="auth/index" />
             <Stack.Screen name="onboarding/index" />
             <Stack.Screen name="(tabs)" />
           </Stack>

@@ -1,9 +1,12 @@
 import { useEffect } from 'react';
 import { Pressable, Text, View } from 'react-native';
 import { useRouter } from 'expo-router';
+import { LogOut } from 'lucide-react-native';
 
 import { Screen } from '@/components/ui/Screen';
+import { useAuthStore } from '@/stores/auth.store';
 import { useProfileStore } from '@/stores/profile.store';
+import { useThemeColors } from '@/theme/use-theme-colors';
 import { useThemeStore } from '@/stores/theme.store';
 
 const GOAL_LABEL: Record<string, string> = {
@@ -23,10 +26,13 @@ function StatRow({ label, value }: { label: string; value: string }) {
 
 export default function ProfileScreen() {
   const router = useRouter();
+  const colors = useThemeColors();
   const profile = useProfileStore((s) => s.profile);
   const load = useProfileStore((s) => s.load);
   const mode = useThemeStore((s) => s.mode);
   const toggle = useThemeStore((s) => s.toggle);
+  const session = useAuthStore((s) => s.session);
+  const signOut = useAuthStore((s) => s.signOut);
 
   useEffect(() => {
     load();
@@ -39,6 +45,9 @@ export default function ProfileScreen() {
         <Text className="font-body text-base text-muted mt-1">
           {profile?.goal ? GOAL_LABEL[profile.goal] : 'Configura tu perfil'}
         </Text>
+        {session?.user.email ? (
+          <Text className="font-body text-muted text-xs mt-1">{session.user.email}</Text>
+        ) : null}
       </View>
 
       {profile?.dailyCalorieTarget ? (
@@ -84,9 +93,17 @@ export default function ProfileScreen() {
 
       <Pressable
         onPress={() => router.push('/onboarding')}
-        className="bg-muted/30 border border-border rounded-2xl px-4 py-4 active:opacity-70"
+        className="bg-muted/30 border border-border rounded-2xl px-4 py-4 active:opacity-70 mb-3"
       >
         <Text className="font-body-medium text-fg">Editar perfil</Text>
+      </Pressable>
+
+      <Pressable
+        onPress={signOut}
+        className="flex-row items-center justify-center gap-2 border border-destructive/40 rounded-2xl px-4 py-4 active:opacity-70"
+      >
+        <LogOut color={colors.destructive} size={18} />
+        <Text className="font-body-medium text-destructive">Cerrar sesión</Text>
       </Pressable>
     </Screen>
   );
