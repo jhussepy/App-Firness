@@ -102,7 +102,7 @@ export default function ProfileScreen() {
       </Pressable>
 
       <Pressable
-        onPress={() => router.push('/onboarding')}
+        onPress={() => router.push('/profile/edit')}
         className="bg-muted/30 border border-border rounded-2xl px-4 py-4 active:opacity-70 mb-3"
       >
         <Text className="font-body-medium text-fg">Editar perfil</Text>
