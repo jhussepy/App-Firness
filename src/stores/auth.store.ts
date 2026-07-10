@@ -39,6 +39,7 @@ function mapAuthError(message: string): string {
   if (message.includes('User already registered')) return 'Ya existe una cuenta con este correo.';
   if (message.includes('Password should be at least')) return 'La contraseña debe tener al menos 6 caracteres.';
   if (message.includes('Unable to validate email address')) return 'Ese correo no es válido.';
+  if (message.includes('rate limit')) return 'Demasiados intentos en poco tiempo. Espera unos minutos e intenta de nuevo.';
   if (message.includes('fetch')) return 'Sin conexión. Revisa tu internet e intenta de nuevo.';
   return 'Algo salió mal. Intenta de nuevo.';
 }
