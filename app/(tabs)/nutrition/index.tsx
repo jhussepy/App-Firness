@@ -7,11 +7,14 @@ import { CalorieSummaryCard } from '@/components/nutrition/CalorieSummaryCard';
 import { DayStrip } from '@/components/nutrition/DayStrip';
 import { FoodDetailModal } from '@/components/nutrition/FoodDetailModal';
 import { MealSection } from '@/components/nutrition/MealSection';
+import { WaterTrackerCard } from '@/components/nutrition/WaterTrackerCard';
 import { LoadingState } from '@/components/ui/LoadingState';
 import { Screen } from '@/components/ui/Screen';
 import { toLocalISODate, todayISODate } from '@/lib/date';
+import { dailyWaterGoalGlasses } from '@/lib/hydration';
 import { entriesForDate, entriesForMeal, macroTargetsToTotals, totalsForEntries } from '@/lib/nutrition-totals';
 import { MEAL_LABEL } from '@/lib/nutrition-labels';
+import { useHydrationStore } from '@/stores/hydration.store';
 import { useNutritionStore } from '@/stores/nutrition.store';
 import { useProfileStore } from '@/stores/profile.store';
 import { useThemeColors } from '@/theme/use-theme-colors';
@@ -22,13 +25,15 @@ export default function NutritionScreen() {
   const profile = useProfileStore((s) => s.profile);
   const loadProfile = useProfileStore((s) => s.load);
   const { foods, entries, isLoaded, load, removeEntry, updateEntryServings } = useNutritionStore();
+  const { days: waterDays, isLoaded: isHydrationLoaded, load: loadHydration, addGlass, removeGlass } = useHydrationStore();
   const [selectedDate, setSelectedDate] = useState(todayISODate());
   const [selectedEntryId, setSelectedEntryId] = useState<string | null>(null);
 
   useEffect(() => {
     if (!isLoaded) load();
+    if (!isHydrationLoaded) loadHydration();
     loadProfile();
-  }, [isLoaded, load, loadProfile]);
+  }, [isLoaded, load, isHydrationLoaded, loadHydration, loadProfile]);
 
   const todaysEntries = useMemo(() => entriesForDate(entries, selectedDate), [entries, selectedDate]);
   const consumed = useMemo(() => totalsForEntries(todaysEntries, foods), [todaysEntries, foods]);
@@ -45,6 +50,9 @@ export default function NutritionScreen() {
     [entries]
   );
   const meals = profile?.includedMeals ?? ['breakfast', 'lunch', 'dinner'];
+
+  const waterGoal = dailyWaterGoalGlasses(profile?.weightKg);
+  const waterGlasses = waterDays.find((d) => d.date === selectedDate)?.glasses ?? 0;
 
   const selectedEntry = entries.find((e) => e.id === selectedEntryId);
   const selectedFood = foods.find((f) => f.id === selectedEntry?.foodId);
@@ -71,13 +79,20 @@ export default function NutritionScreen() {
         </View>
       </View>
 
-      {!isLoaded ? (
+      {!isLoaded || !isHydrationLoaded ? (
         <LoadingState />
       ) : (
         <>
           <DayStrip selectedDate={selectedDate} onSelectDate={setSelectedDate} loggedDates={loggedDates} />
 
           <CalorieSummaryCard consumed={consumed} target={target} />
+
+          <WaterTrackerCard
+            glasses={waterGlasses}
+            goal={waterGoal}
+            onAdd={() => addGlass(selectedDate)}
+            onRemove={() => removeGlass(selectedDate)}
+          />
 
           {meals.map((meal) => {
             const mealEntries = entriesForMeal(todaysEntries, meal);

@@ -4,14 +4,17 @@ import { useRouter } from 'expo-router';
 import { Camera, CalendarRange, Dumbbell, Flame, Minus, Scale, TrendingDown, TrendingUp } from 'lucide-react-native';
 
 import { CalorieSummaryCard } from '@/components/nutrition/CalorieSummaryCard';
+import { WaterTrackerCard } from '@/components/nutrition/WaterTrackerCard';
 import { LoadingState } from '@/components/ui/LoadingState';
 import { PrimaryButton } from '@/components/ui/PrimaryButton';
 import { Screen } from '@/components/ui/Screen';
 import { todayISODate } from '@/lib/date';
+import { dailyWaterGoalGlasses } from '@/lib/hydration';
 import { entriesForDate, macroTargetsToTotals, totalsForEntries } from '@/lib/nutrition-totals';
 import { findNextScheduledRoutine, labelForDaysUntil } from '@/lib/next-scheduled-routine';
 import { startSessionFromRoutine } from '@/lib/start-routine-session';
 import { currentLoggingStreak } from '@/lib/streak';
+import { useHydrationStore } from '@/stores/hydration.store';
 import { useNutritionStore } from '@/stores/nutrition.store';
 import { usePlanStore } from '@/stores/plan.store';
 import { useProfileStore } from '@/stores/profile.store';
@@ -38,6 +41,11 @@ export default function DashboardScreen() {
   const isMetricsLoaded = useProgressStore((s) => s.isLoaded);
   const loadMetrics = useProgressStore((s) => s.load);
 
+  const waterDays = useHydrationStore((s) => s.days);
+  const isHydrationLoaded = useHydrationStore((s) => s.isLoaded);
+  const loadHydration = useHydrationStore((s) => s.load);
+  const addGlass = useHydrationStore((s) => s.addGlass);
+
   const activeSession = useWorkoutStore((s) => s.activeSession);
   const startSession = useWorkoutStore((s) => s.startSession);
   const addSet = useWorkoutStore((s) => s.addSet);
@@ -47,7 +55,18 @@ export default function DashboardScreen() {
     if (!isNutritionLoaded) loadNutrition();
     if (!isPlanLoaded) loadPlan();
     if (!isMetricsLoaded) loadMetrics();
-  }, [loadProfile, isNutritionLoaded, loadNutrition, isPlanLoaded, loadPlan, isMetricsLoaded, loadMetrics]);
+    if (!isHydrationLoaded) loadHydration();
+  }, [
+    loadProfile,
+    isNutritionLoaded,
+    loadNutrition,
+    isPlanLoaded,
+    loadPlan,
+    isMetricsLoaded,
+    loadMetrics,
+    isHydrationLoaded,
+    loadHydration,
+  ]);
 
   const firstName = profile?.name?.split(' ')[0] ?? '';
 
@@ -65,7 +84,11 @@ export default function DashboardScreen() {
   const previousWeight = weightMetrics[weightMetrics.length - 2];
   const weightDelta = latestWeight && previousWeight ? latestWeight.value - previousWeight.value : 0;
 
-  const isAllLoaded = isProfileLoaded && isNutritionLoaded && isPlanLoaded && isMetricsLoaded;
+  const waterGoal = dailyWaterGoalGlasses(profile?.weightKg);
+  const waterGlasses = waterDays.find((d) => d.date === todayISODate())?.glasses ?? 0;
+
+  const isAllLoaded =
+    isProfileLoaded && isNutritionLoaded && isPlanLoaded && isMetricsLoaded && isHydrationLoaded;
 
   const next = findNextScheduledRoutine(scheduledRoutines, routines);
 
@@ -145,6 +168,7 @@ export default function DashboardScreen() {
               </View>
               <Text className="font-body text-muted text-xs mt-0.5 text-center">Peso actual</Text>
             </View>
+            <WaterTrackerCard glasses={waterGlasses} goal={waterGoal} onAdd={() => addGlass()} compact />
           </View>
 
           <View className="bg-muted/30 border border-border rounded-2xl p-5 mt-1">
