@@ -1,7 +1,7 @@
 import { useEffect, useMemo, useState } from 'react';
 import { Pressable, Text, View } from 'react-native';
 import { useRouter } from 'expo-router';
-import { Camera } from 'lucide-react-native';
+import { Camera, CalendarDays } from 'lucide-react-native';
 
 import { CalorieSummaryCard } from '@/components/nutrition/CalorieSummaryCard';
 import { DayStrip } from '@/components/nutrition/DayStrip';
@@ -11,20 +11,14 @@ import { LoadingState } from '@/components/ui/LoadingState';
 import { Screen } from '@/components/ui/Screen';
 import { toLocalISODate, todayISODate } from '@/lib/date';
 import { entriesForDate, entriesForMeal, macroTargetsToTotals, totalsForEntries } from '@/lib/nutrition-totals';
+import { MEAL_LABEL } from '@/lib/nutrition-labels';
 import { useNutritionStore } from '@/stores/nutrition.store';
 import { useProfileStore } from '@/stores/profile.store';
-import type { MealSlot } from '@/data/models/user';
-
-const MEAL_LABELS: Record<MealSlot, string> = {
-  breakfast: 'Desayuno',
-  lunch: 'Almuerzo',
-  dinner: 'Cena',
-  snack1: 'Snack 1',
-  snack2: 'Snack 2',
-};
+import { useThemeColors } from '@/theme/use-theme-colors';
 
 export default function NutritionScreen() {
   const router = useRouter();
+  const colors = useThemeColors();
   const profile = useProfileStore((s) => s.profile);
   const loadProfile = useProfileStore((s) => s.load);
   const { foods, entries, isLoaded, load, removeEntry, updateEntryServings } = useNutritionStore();
@@ -59,13 +53,22 @@ export default function NutritionScreen() {
     <Screen>
       <View className="pt-4 pb-3 flex-row items-center justify-between">
         <Text className="font-display-bold text-3xl text-fg">Nutrición</Text>
-        <Pressable
-          onPress={() => router.push({ pathname: '/(tabs)/nutrition/scan', params: { date: selectedDate } })}
-          accessibilityLabel="Escanear comida"
-          className="w-10 h-10 rounded-full bg-primary items-center justify-center active:opacity-85"
-        >
-          <Camera color="white" size={20} />
-        </Pressable>
+        <View className="flex-row items-center gap-2">
+          <Pressable
+            onPress={() => router.push('/(tabs)/nutrition/meal-plan')}
+            accessibilityLabel="Plan de comidas"
+            className="w-10 h-10 rounded-full bg-muted/30 border border-border items-center justify-center active:opacity-80"
+          >
+            <CalendarDays color={colors.primary} size={20} />
+          </Pressable>
+          <Pressable
+            onPress={() => router.push({ pathname: '/(tabs)/nutrition/scan', params: { date: selectedDate } })}
+            accessibilityLabel="Escanear comida"
+            className="w-10 h-10 rounded-full bg-primary items-center justify-center active:opacity-85"
+          >
+            <Camera color="white" size={20} />
+          </Pressable>
+        </View>
       </View>
 
       {!isLoaded ? (
@@ -82,7 +85,7 @@ export default function NutritionScreen() {
             return (
               <MealSection
                 key={meal}
-                title={MEAL_LABELS[meal]}
+                title={MEAL_LABEL[meal]}
                 entries={mealEntries}
                 foods={foods}
                 totalCalories={mealTotals.calories}

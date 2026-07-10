@@ -8,18 +8,11 @@ import { PrimaryButton } from '@/components/ui/PrimaryButton';
 import { Screen } from '@/components/ui/Screen';
 import { ScreenHeader } from '@/components/ui/ScreenHeader';
 import { FoodScanError, foodScanErrorMessage, scanFoodPhoto, type FoodScanResult } from '@/lib/food-scan-client';
+import { MEAL_LABEL } from '@/lib/nutrition-labels';
 import { useNutritionStore } from '@/stores/nutrition.store';
 import { useProfileStore } from '@/stores/profile.store';
 import { useThemeColors } from '@/theme/use-theme-colors';
 import type { MealSlot } from '@/data/models/user';
-
-const MEAL_LABELS: Record<MealSlot, string> = {
-  breakfast: 'Desayuno',
-  lunch: 'Almuerzo',
-  dinner: 'Cena',
-  snack1: 'Snack 1',
-  snack2: 'Snack 2',
-};
 
 type Status = 'idle' | 'scanning' | 'result' | 'error';
 
@@ -184,7 +177,7 @@ export default function ScanFoodScreen() {
                 }`}
               >
                 <Text className={`font-body-medium text-sm ${selectedMeal === meal ? 'text-white' : 'text-fg'}`}>
-                  {MEAL_LABELS[meal]}
+                  {MEAL_LABEL[meal]}
                 </Text>
               </Pressable>
             ))}
