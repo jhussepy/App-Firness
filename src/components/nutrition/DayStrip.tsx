@@ -1,6 +1,6 @@
 import { Pressable, Text, View } from 'react-native';
 
-import { isSameDay, todayISODate } from '@/lib/date';
+import { isSameDay, parseLocalISODate, toLocalISODate, todayISODate } from '@/lib/date';
 
 const DAY_LABELS = ['D', 'L', 'M', 'M', 'J', 'V', 'S'];
 
@@ -18,7 +18,7 @@ function startOfWeek(date: Date): Date {
 }
 
 export function DayStrip({ selectedDate, onSelectDate, loggedDates }: DayStripProps) {
-  const start = startOfWeek(new Date(selectedDate));
+  const start = startOfWeek(parseLocalISODate(selectedDate));
   const days = Array.from({ length: 7 }, (_, i) => {
     const d = new Date(start);
     d.setDate(start.getDate() + i);
@@ -29,7 +29,7 @@ export function DayStrip({ selectedDate, onSelectDate, loggedDates }: DayStripPr
   return (
     <View className="flex-row justify-between mb-4">
       {days.map((d) => {
-        const iso = d.toISOString().slice(0, 10);
+        const iso = toLocalISODate(d);
         const isSelected = isSameDay(iso, selectedDate);
         const isToday = isSameDay(iso, today);
         return (

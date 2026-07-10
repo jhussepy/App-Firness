@@ -5,7 +5,7 @@ import { Dumbbell, Flame, Scale } from 'lucide-react-native';
 import { MetricTrendChart } from '@/components/progress/MetricTrendChart';
 import { StatCard } from '@/components/progress/StatCard';
 import { Screen } from '@/components/ui/Screen';
-import { formatShortDate } from '@/lib/date';
+import { formatShortDate, toLocalISODate } from '@/lib/date';
 import { entriesForDate, totalsForEntries } from '@/lib/nutrition-totals';
 import { useNutritionStore } from '@/stores/nutrition.store';
 import { useProgressStore } from '@/stores/progress.store';
@@ -73,7 +73,7 @@ export default function ProgressScreen() {
     for (let i = 0; i < 7; i++) {
       const d = new Date();
       d.setDate(d.getDate() - i);
-      const iso = d.toISOString().slice(0, 10);
+      const iso = toLocalISODate(d);
       sum += totalsForEntries(entriesForDate(entries, iso), foods).calories;
     }
     return Math.round(sum / 7);

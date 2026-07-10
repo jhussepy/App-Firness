@@ -1,6 +1,7 @@
 import { create } from 'zustand';
 
 import { foodEntryRepository, foodRepository } from '@/data/repositories/nutrition.repository';
+import { parseLocalISODate } from '@/lib/date';
 import { generateId } from '@/lib/ids';
 import type { FoodEntry, FoodItem } from '@/data/models/nutrition';
 import type { MealSlot } from '@/data/models/user';
@@ -25,7 +26,24 @@ export const useNutritionStore = create<NutritionState>((set, get) => ({
   },
   async logFood(foodId, mealType, servings, date) {
     const now = new Date();
-    const loggedAt = date ? `${date}T${now.toTimeString().slice(0, 8)}.000Z` : now.toISOString();
+    // `date`, when given, is a bare "YYYY-MM-DD" local day (from DayStrip),
+    // not an instant — build a real Date from its local Y/M/D plus the
+    // current local time-of-day, then let toISOString() convert that to
+    // the correct UTC instant. (Concatenating date + toTimeString() and
+    // labeling the result "Z" was wrong: toTimeString() is local time, so
+    // that mislabeled a local time as UTC.)
+    let loggedAt = now.toISOString();
+    if (date) {
+      const day = parseLocalISODate(date);
+      loggedAt = new Date(
+        day.getFullYear(),
+        day.getMonth(),
+        day.getDate(),
+        now.getHours(),
+        now.getMinutes(),
+        now.getSeconds()
+      ).toISOString();
+    }
     const entry: FoodEntry = {
       id: generateId(),
       foodId,

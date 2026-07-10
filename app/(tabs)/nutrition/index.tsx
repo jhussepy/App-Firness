@@ -7,7 +7,7 @@ import { CalorieSummaryCard } from '@/components/nutrition/CalorieSummaryCard';
 import { DayStrip } from '@/components/nutrition/DayStrip';
 import { MealSection } from '@/components/nutrition/MealSection';
 import { Screen } from '@/components/ui/Screen';
-import { todayISODate } from '@/lib/date';
+import { toLocalISODate, todayISODate } from '@/lib/date';
 import { entriesForDate, entriesForMeal, macroTargetsToTotals, totalsForEntries } from '@/lib/nutrition-totals';
 import { useNutritionStore } from '@/stores/nutrition.store';
 import { useProfileStore } from '@/stores/profile.store';
@@ -43,7 +43,10 @@ export default function NutritionScreen() {
       ),
     [profile]
   );
-  const loggedDates = useMemo(() => new Set(entries.map((e) => e.loggedAt.slice(0, 10))), [entries]);
+  const loggedDates = useMemo(
+    () => new Set(entries.map((e) => toLocalISODate(new Date(e.loggedAt)))),
+    [entries]
+  );
   const meals = profile?.includedMeals ?? ['breakfast', 'lunch', 'dinner'];
 
   return (

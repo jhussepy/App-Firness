@@ -51,7 +51,7 @@
     "ios": "expo start --ios",
     "web": "expo start --web",
     "build": "expo export -p web",
-    "test": "jest"
+    "test": "TZ=America/Lima jest"
   },
   "private": true,
   "jest": {
